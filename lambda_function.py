@@ -5,7 +5,7 @@ import os
 ecs = boto3.client('ecs')
 
 def lambda_handler(event, context):
-    print("Lambda triggered. Event:", json.dumps(event))  # Log S3 trigger input
+    print("Lambda triggered. Event:", json.dumps(event, default=str))
 
     try:
         response = ecs.run_task(
@@ -36,14 +36,14 @@ def lambda_handler(event, context):
             }
         )
 
-        print("ECS run_task response:", json.dumps(response, indent=2))
+        print("ECS run_task response:", json.dumps(response, indent=2, default=str))
 
         failures = response.get("failures", [])
         if failures:
-            print("ECS run_task FAILED:", json.dumps(failures, indent=2))
+            print("ECS run_task FAILED:", json.dumps(failures, indent=2, default=str))
             return {
                 'statusCode': 500,
-                'body': json.dumps({"message": "ECS task failed to start", "failures": failures})
+                'body': json.dumps({"message": "ECS task failed to start", "failures": failures}, default=str)
             }
 
         return {
